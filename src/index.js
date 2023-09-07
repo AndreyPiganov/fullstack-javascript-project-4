@@ -54,6 +54,7 @@ const pageLoader = (inputUrl, output = '') => {
           filesLinks[elUrl.href] = absoluteElementPath
           log(fileName)
           log(url.href)
+          log(elUrl.href)
           log(`Source handled: ${oldSrc}`);
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
