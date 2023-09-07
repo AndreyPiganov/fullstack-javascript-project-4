@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@jest/globals": "^29.6.4",
     "axios": "^1.5.0",
     "axios-debug-log": "^1.0.0",
     "cheerio": "^1.0.0-rc.12",
