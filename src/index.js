@@ -30,7 +30,7 @@ const pageLoader = (inputUrl, output = '') => {
   const htmlName = `${fileName}.html`;
   const absoluteFilePath = getAbsoluteFilePath(htmlName);
   const absoluteDirPath = getAbsoluteFilePath(output, dirName);
-  axios.get(url)
+  return axios.get(url)
     .then((response) => response.data)
     .then((html) => {
       // Создаем папку
