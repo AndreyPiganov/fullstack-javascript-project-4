@@ -78,7 +78,7 @@ const pageLoader = (inputUrl, output = '') => {
         }
       });
     })
-    .catch((err) => console.error(err));
+    .catch((err) => Promise.reject(err));
 };
 // https://ru.hexlet.io/courses
 // https://www.brizk.com
