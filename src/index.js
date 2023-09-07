@@ -68,6 +68,7 @@ const pageLoader = (inputUrl, output = '') => {
         .then((response) => fs.writeFile(filesLinks[link], response.data, 'binary'))
     }
     ))
+    log(resources);
     const tasks = new Listr(resources);
     return tasks.run();
   })
