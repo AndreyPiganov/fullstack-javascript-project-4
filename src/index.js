@@ -33,9 +33,11 @@ const pageLoader = (inputUrl, output = '') => {
   const absoluteDirPath = getAbsoluteFilePath(output, dirName);
   return fs.access(outputDirPath)
   .then(() => axios.get(url))
-  .then((response) => cheerio.load(response.data))
+  .then((response) => {
+    log(response.data)
+    return cheerio.load(response.data)
+  })
   .then(($) => {
-    log($)
       // Функция устанавливает определенные ресурсы
       const downloadResources = (index, element) => {
         const oldSrc = normalizeFileName($(element).attr(attributes[element.name]));
