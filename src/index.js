@@ -73,7 +73,7 @@ const pageLoader = (inputUrl, output = '') => {
     }
     ))
     log(resources)
-    const tasks = new Listr(resources);
+    const tasks = new Listr(resources, {concurrent: true});
     return tasks.run();
   })
     .then(() => htmlName)
