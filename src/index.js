@@ -78,7 +78,9 @@ const pageLoader = (inputUrl, output = '') => {
           console.error(err);
         }
       });
+      return html;
     })
+    .then(() => htmlName)
     //.catch((err) => console.error(err));
 };
 // https://ru.hexlet.io/courses
