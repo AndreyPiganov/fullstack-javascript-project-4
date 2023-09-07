@@ -10,7 +10,7 @@ import Listr from 'listr';
 
 import { getAbsoluteFilePath, isNotOriginHostUrl, normalizeFileName } from './utils.js';
 
-const pageLoader = (url, output = '') => {
+const pageLoader = (inputUrl, output = '') => {
   // const log = debug('page-loader');
   const tags = ['img', 'link', 'script'];
   const attributes = {
@@ -19,8 +19,13 @@ const pageLoader = (url, output = '') => {
     script: 'src',
   };
   const resources = [];
-  const nUrl = new URL(url);
-  const fileName = nUrl.host.split('.').join('-');
+  let url;
+  try{
+    url = new URL(inputUrl)
+  }catch(err){
+    return Promise.reject(err);
+  }
+  const fileName = url.host.split('.').join('-');
   const dirName = `${fileName}_files`;
   const htmlName = `${fileName}.html`;
   const absoluteFilePath = getAbsoluteFilePath(htmlName);
@@ -41,7 +46,6 @@ const pageLoader = (url, output = '') => {
       const downloadResources = (index, element) => {
         const oldSrc = normalizeFileName($(element).attr(attributes[element.name]));
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
-          console.log('hello')
           return;
         }
         const elUrl = new URL(oldSrc, url);
