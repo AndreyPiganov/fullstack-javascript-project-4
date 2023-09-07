@@ -35,6 +35,7 @@ const pageLoader = (inputUrl, output = '') => {
   .then(() => axios.get(url))
   .then((response) => {
     log(response.data)
+    log(response.config.url)
     return cheerio.load(response.data)
   })
   .then(($) => {
