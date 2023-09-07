@@ -28,9 +28,10 @@ const pageLoader = (inputUrl, output = '') => {
   const fileName = url.host.split('.').join('-');
   const dirName = `${fileName}_files`;
   const htmlName = `${fileName}.html`;
-  const absoluteFilePath = getAbsoluteFilePath(htmlName);
+  const absoluteFilePath = getAbsoluteFilePath(output,htmlName);
   const absoluteDirPath = getAbsoluteFilePath(output, dirName);
-  return axios.get(url)
+  return fs.access(output)
+  .then(() => axios.get(url))
   .then((response) => cheerio.load(response.data))
   .then(($) => {
       // Функция устанавливает определенные ресурсы
