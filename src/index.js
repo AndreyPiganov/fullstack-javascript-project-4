@@ -45,7 +45,7 @@ const pageLoader = (inputUrl, output = '') => {
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
           return 
         }
-          const elUrl = new URL(oldSrc, url.href);
+          const elUrl = new URL(url.href + oldSrc);
           const extname = oldSrc.match(/(\.\w+)(?=\?|$)/i) || '';
           const elementPath = `${fileName}-${oldSrc.replace(extname[0], '').split(/[?_/]/).join('-')}${extname[0]}`;
           const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
