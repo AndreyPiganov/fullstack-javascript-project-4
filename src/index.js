@@ -64,11 +64,11 @@ const pageLoader = (inputUrl, output = '') => {
     const resources = Object.keys(filesLinks).map((link) =>(      
       {
       title: link,
-      task: () => axios.get(link, { responseType: 'arraybuffer' })
+      task: () => axios.get(link, { responseType: 'stream' })
         .then((response) => fs.writeFile(filesLinks[link], response.data, 'binary'))
     }
     ))
-    log(resources);
+    log(resources)
     const tasks = new Listr(resources);
     return tasks.run();
   })
