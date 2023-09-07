@@ -31,46 +31,43 @@ const pageLoader = (inputUrl, output = '') => {
   const absoluteFilePath = getAbsoluteFilePath(htmlName);
   const absoluteDirPath = getAbsoluteFilePath(output, dirName);
   return axios.get(url)
-    .then((response) => cheerio.load(response.data))
-    .then((html) => cheerio.load(html))
-    .then(($) => {
+  .then((response) => cheerio.load(response.data))
+  .then(($) => {
       // Функция устанавливает определенные ресурсы
       const downloadResources = (index, element) => {
         const oldSrc = normalizeFileName($(element).attr(attributes[element.name]));
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
-          return;
+          return 
         }
-        const elUrl = new URL(oldSrc, url);
-        const extname = oldSrc.match(/(\.\w+)(?=\?|$)/i) || '';
-        const elementPath = `${fileName}-${oldSrc.replace(extname[0], '').split(/[?_/]/).join('-')}${extname[0]}`;
-        const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
-        const newSrc = path.join(dirName, elementPath);
-        filesLinks[elUrl.href] = absoluteElementPath
-        $(element).attr(attributes[element.name], newSrc);
-        log(`Source handled: ${oldSrc}`);
+          const elUrl = new URL(oldSrc, url);
+          const extname = oldSrc.match(/(\.\w+)(?=\?|$)/i) || '';
+          const elementPath = `${fileName}-${oldSrc.replace(extname[0], '').split(/[?_/]/).join('-')}${extname[0]}`;
+          const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
+          const newSrc = path.join(dirName, elementPath);
+          $(element).attr(attributes[element.name], newSrc);
+          filesLinks[elUrl.href] = absoluteElementPath
+          log(`Source handled: ${oldSrc}`);
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
       tags.forEach((tag) => $(tag).each(downloadResources));
       return fs.writeFile(absoluteFilePath, $.html())
     })
     .then(() => {
-            // Создаем папку
-            fs.mkdir(absoluteDirPath, (err) => {
-              if (err) {
-                console.error(err);
-              }
-            });
+      fs.mkdir(absoluteDirPath, (err) =>{
+        if(err){
+          console.error(err)
+        }
+      })
     })
     .then(() =>{
     const resources = Object.keys(filesLinks).map((link) =>(      
       {
       title: link,
-      task: () => axios.get(link, { responseType: 'stream' })
-        .then((response) => response.data.pipe(fs.createWriteStream(filesLinks[link])))
+      task: () => axios.get(link, { responseType: 'arraybuffer' })
+        .then((response) => fs.writeFile(filesLinks[link], response.data, 'binary'))
     }
     ))
     const tasks = new Listr(resources);
-    // Начало загрузки
     return tasks.run();
   })
     .then(() => htmlName)

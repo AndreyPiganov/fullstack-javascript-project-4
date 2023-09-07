@@ -56,7 +56,6 @@ program
       console.error(message);
       process.exit(1);
     }
-    pageLoader(url, options.output);
   });
 
 program.parse();
