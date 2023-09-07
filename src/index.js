@@ -11,7 +11,7 @@ import Listr from 'listr';
 import { getAbsoluteFilePath, isNotOriginHostUrl, normalizeFileName } from './utils.js';
 
 const pageLoader = (inputUrl, output = '') => {
-  // const log = debug('page-loader');
+  const log = debug('page-loader');
   const tags = ['img', 'link', 'script'];
   const attributes = {
     img: 'src',
@@ -54,6 +54,7 @@ const pageLoader = (inputUrl, output = '') => {
         const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
         const newSrc = path.join(dirName, elementPath);
         $(element).attr(attributes[element.name], newSrc);
+        log(`Source handled: ${oldSrc}`);
         resources.push({
           title: elUrl.href,
           task: () => axios.get(elUrl, { responseType: 'stream' })
