@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio';
 
 import axios from 'axios';
 
-// import debug from 'debug';
+import debug from 'debug';
 
 import Listr from 'listr';
 
