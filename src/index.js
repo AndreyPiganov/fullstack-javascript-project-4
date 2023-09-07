@@ -60,7 +60,7 @@ const pageLoader = (inputUrl, output = '') => {
             .then((response) => {
               response.data.pipe(fs.createWriteStream(absoluteElementPath));
             })
-            .catch((err) => console.error(err)),
+            .catch((err) => Promise.reject(err)),
         });
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
