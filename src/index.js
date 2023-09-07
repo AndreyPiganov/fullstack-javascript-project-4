@@ -64,7 +64,7 @@ const pageLoader = (inputUrl, output = '') => {
     const resources = Object.keys(filesLinks).map((link) =>(      
       {
       title: link,
-      task: () => axios.get(link, { responseType: 'stream' })
+      task: () => axios.get(link, { responseType: 'arraybuffer' })
         .then((response) => fs.writeFile(filesLinks[link], response.data, 'binary'))
     }
     ))
