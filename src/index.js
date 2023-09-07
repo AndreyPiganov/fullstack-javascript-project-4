@@ -41,7 +41,6 @@ const pageLoader = (inputUrl, output = '') => {
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
           return 
         }
-        log(oldSrc);
           const elUrl = new URL(oldSrc, url);
           const extname = oldSrc.match(/(\.\w+)(?=\?|$)/i) || '';
           const elementPath = `${fileName}-${oldSrc.replace(extname[0], '').split(/[?_/]/).join('-')}${extname[0]}`;
@@ -68,7 +67,6 @@ const pageLoader = (inputUrl, output = '') => {
       title: link,
       task: () => axios.get(link, { responseType: 'arraybuffer' })
         .then((response) => {
-          log(response);
           fs.writeFile(filesLinks[response.config.url], response.data, 'binary')
       })
     }
