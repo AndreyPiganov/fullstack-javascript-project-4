@@ -41,6 +41,7 @@ const pageLoader = (url, output = '') => {
       const downloadResources = (index, element) => {
         const oldSrc = normalizeFileName($(element).attr(attributes[element.name]));
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
+          console.log('hello')
           return;
         }
         const elUrl = new URL(oldSrc, url);
