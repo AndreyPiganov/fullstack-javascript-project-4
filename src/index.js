@@ -48,6 +48,7 @@ const pageLoader = (inputUrl, output = '') => {
           const newSrc = path.join(dirName, elementPath);
           $(element).attr(attributes[element.name], newSrc);
           filesLinks[elUrl.href] = absoluteElementPath
+          log(url);
           log(`Source handled: ${oldSrc}`);
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
