@@ -11,7 +11,7 @@ program
   .description('Page loader utility')
   .version('0.0.1')
   .option('-o, --output [dir]', 'output dir')
-  .argument('<url>','URL of page')
+  .argument('<url>', 'URL of page')
   .action((url, options) => {
     pageLoader(url, options.output);
   });
