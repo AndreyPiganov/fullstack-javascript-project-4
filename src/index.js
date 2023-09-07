@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import * as cheerio from 'cheerio';
 
@@ -18,7 +18,7 @@ const pageLoader = (inputUrl, output = '') => {
     link: 'href',
     script: 'src',
   };
-  const resources = [];
+  const filesLinks = {};
   let url;
   try{
     url = new URL(inputUrl)
@@ -31,16 +31,8 @@ const pageLoader = (inputUrl, output = '') => {
   const absoluteFilePath = getAbsoluteFilePath(htmlName);
   const absoluteDirPath = getAbsoluteFilePath(output, dirName);
   return axios.get(url)
-    .then((response) => response.data)
-    .then((html) => {
-      // Создаем папку
-      fs.mkdir(absoluteDirPath, (err) => {
-        if (err) {
-          console.error(err);
-        }
-      });
-      return cheerio.load(html);
-    })
+    .then((response) => cheerio.load(response.data))
+    .then((html) => cheerio.load(html))
     .then(($) => {
       // Функция устанавливает определенные ресурсы
       const downloadResources = (index, element) => {
@@ -53,35 +45,35 @@ const pageLoader = (inputUrl, output = '') => {
         const elementPath = `${fileName}-${oldSrc.replace(extname[0], '').split(/[?_/]/).join('-')}${extname[0]}`;
         const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
         const newSrc = path.join(dirName, elementPath);
+        filesLinks[elUrl.href] = absoluteElementPath
         $(element).attr(attributes[element.name], newSrc);
         log(`Source handled: ${oldSrc}`);
-        resources.push({
-          title: elUrl.href,
-          task: () => axios.get(elUrl, { responseType: 'stream' })
-            .then((response) => {
-              response.data.pipe(fs.createWriteStream(absoluteElementPath));
-            })
-            //.catch((err) => Promise.reject(err)),
-        });
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
       tags.forEach((tag) => $(tag).each(downloadResources));
-      // Загрузка ресурсов
-      const items = new Listr(resources);
-      // Начало загрузки
-      items.run();
-      return $.html();
+      return fs.writeFile(absoluteFilePath, $.html())
     })
-    .then((html) => {
-      fs.writeFile(absoluteFilePath, html, (err) => {
-        if (err) {
-          console.error(err);
-        }
-      });
-      return html;
+    .then(() => {
+            // Создаем папку
+            fs.mkdir(absoluteDirPath, (err) => {
+              if (err) {
+                console.error(err);
+              }
+            });
     })
+    .then(() =>{
+    const resources = Object.keys(filesLinks).map((link) =>(      
+      {
+      title: link,
+      task: () => axios.get(link, { responseType: 'stream' })
+        .then((response) => response.data.pipe(fs.createWriteStream(filesLinks[link])))
+    }
+    ))
+    const tasks = new Listr(resources);
+    // Начало загрузки
+    return tasks.run();
+  })
     .then(() => htmlName)
-    //.catch((err) => console.error(err));
 };
 // https://ru.hexlet.io/courses
 // https://www.brizk.com
