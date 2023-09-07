@@ -35,6 +35,7 @@ const pageLoader = (inputUrl, output = '') => {
   .then(() => axios.get(url))
   .then((response) => cheerio.load(response.data))
   .then(($) => {
+    log($)
       // Функция устанавливает определенные ресурсы
       const downloadResources = (index, element) => {
         const oldSrc = normalizeFileName($(element).attr(attributes[element.name]));
@@ -48,7 +49,8 @@ const pageLoader = (inputUrl, output = '') => {
           const newSrc = path.join(dirName, elementPath);
           $(element).attr(attributes[element.name], newSrc);
           filesLinks[elUrl.href] = absoluteElementPath
-          log(elUrl)
+          log(fileName)
+          log(url.href)
           log(`Source handled: ${oldSrc}`);
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
