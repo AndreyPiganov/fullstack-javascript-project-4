@@ -67,7 +67,7 @@ const pageLoader = (inputUrl, output = '') => {
       title: link,
       task: () => axios.get(link, { responseType: 'arraybuffer' })
         .then((response) => {
-          log(response.data);
+          log(response);
           fs.writeFile(filesLinks[response.config.url], response.data, 'binary')
       })
     }
