@@ -60,7 +60,7 @@ const pageLoader = (inputUrl, output = '') => {
             .then((response) => {
               response.data.pipe(fs.createWriteStream(absoluteElementPath));
             })
-            .catch((err) => Promise.reject(err)),
+            .catch((err) => console.error(err)),
         });
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
@@ -78,7 +78,7 @@ const pageLoader = (inputUrl, output = '') => {
         }
       });
     })
-    .catch((err) => Promise.reject(err));
+    .catch((err) => console.error(err));
 };
 // https://ru.hexlet.io/courses
 // https://www.brizk.com
