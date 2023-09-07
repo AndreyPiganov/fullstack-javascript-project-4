@@ -25,12 +25,13 @@ const pageLoader = (inputUrl, output = '') => {
   }catch(err){
     return Promise.reject(err);
   }
+  const outputDirPath = getAbsoluteFilePath(output)
   const fileName = url.host.split('.').join('-');
   const dirName = `${fileName}_files`;
   const htmlName = `${fileName}.html`;
   const absoluteFilePath = getAbsoluteFilePath(output,htmlName);
   const absoluteDirPath = getAbsoluteFilePath(output, dirName);
-  return fs.access(output)
+  return fs.access(outputDirPath)
   .then(() => axios.get(url))
   .then((response) => cheerio.load(response.data))
   .then(($) => {
