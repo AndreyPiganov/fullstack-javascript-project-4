@@ -41,14 +41,14 @@ const pageLoader = (inputUrl, output = '') => {
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
           return 
         }
-          const elUrl = new URL(oldSrc, url);
+          const elUrl = new URL(oldSrc, url.href);
           const extname = oldSrc.match(/(\.\w+)(?=\?|$)/i) || '';
           const elementPath = `${fileName}-${oldSrc.replace(extname[0], '').split(/[?_/]/).join('-')}${extname[0]}`;
           const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
           const newSrc = path.join(dirName, elementPath);
           $(element).attr(attributes[element.name], newSrc);
           filesLinks[elUrl.href] = absoluteElementPath
-          log(url);
+          log(elUrl)
           log(`Source handled: ${oldSrc}`);
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
