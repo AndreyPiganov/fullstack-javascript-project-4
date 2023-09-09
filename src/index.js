@@ -26,7 +26,8 @@ const pageLoader = (inputUrl, output = '') => {
     return Promise.reject(err);
   }
   const outputDirPath = getAbsoluteFilePath(output)
-  const fileName = url.host.split('.').join('-') + url.pathname.split('/').join('-');
+  const fileName = url.host.split('.').join('-') + url.pathname.split('/').join('-')
+  const originFileName = url.host.split('.').join('-'); 
   const dirName = `${fileName}_files`;
   const htmlName = `${fileName}.html`;
   const absoluteFilePath = getAbsoluteFilePath(output,htmlName);
@@ -43,7 +44,7 @@ const pageLoader = (inputUrl, output = '') => {
         }
           const elUrl = new URL(oldSrc,url.origin);
           const extname = oldSrc.match(/(\.\w+)(?=\?|$)/i) || '';
-          const elementPath = `${fileName}-${oldSrc.replace(extname[0], '').split(/[?_/]/).join('-')}${extname[0]}`;
+          const elementPath = `${originFileName}-${oldSrc.replace(extname[0], '').split(/[?_/]/).join('-')}${extname[0]}`;
           const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
           const newSrc = path.join(dirName, elementPath);
           $(element).attr(attributes[element.name], newSrc);
