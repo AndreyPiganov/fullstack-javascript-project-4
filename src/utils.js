@@ -10,10 +10,13 @@ export const isNotOriginHostUrl = (str, originStr) => {
     return false;
   }
 };
-export const normalizeFileName = (fileName) => {
+export const normalizeFileName = (fileName, url) => {
   let name = fileName;
   if (name !== undefined && name.startsWith('/')) {
     name = name.replace('/', '');
+  }
+  if(name.startsWith(url.pathname)){
+    name = name.replace(url.pathname, '');
   }
   return name;
 };
