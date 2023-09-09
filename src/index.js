@@ -43,7 +43,7 @@ const pageLoader = (inputUrl, output = '') => {
           return 
         }
           const elUrl = new URL(oldSrc,url.origin);
-          const extname = oldSrc.match(/(\.\w+)(?=\?|$)/i)[0] || '';
+          const extname = (oldSrc.match(/(\.\w+)(?=\?|$)/i))[0] || '';
           const elementPath = `${originFileName}-${oldSrc.replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
           const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
           const newSrc = path.join(dirName, elementPath);
