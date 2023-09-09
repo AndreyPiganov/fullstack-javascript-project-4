@@ -52,6 +52,7 @@ const pageLoader = (inputUrl, output = '') => {
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
       tags.forEach((tag) => $(tag).each(downloadResources));
+      log(absoluteFilePath);
       return fs.writeFile(absoluteFilePath, $.html())
     })
     .then(() => {
