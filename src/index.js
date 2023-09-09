@@ -33,11 +33,7 @@ const pageLoader = (inputUrl, output = '') => {
   const absoluteDirPath = getAbsoluteFilePath(output, dirName);
   return fs.access(outputDirPath)
   .then(() => axios.get(url))
-  .then((response) => {
-    log(response.data)
-    log(response.config.url)
-    return cheerio.load(response.data)
-  })
+  .then((response) => cheerio.load(response.data))
   .then(($) => {
       // Функция устанавливает определенные ресурсы
       const downloadResources = (index, element) => {
@@ -52,7 +48,6 @@ const pageLoader = (inputUrl, output = '') => {
           const newSrc = path.join(dirName, elementPath);
           $(element).attr(attributes[element.name], newSrc);
           filesLinks[elUrl.href] = absoluteElementPath
-          log(elUrl);
           log(`Source handled: ${oldSrc}`);
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
