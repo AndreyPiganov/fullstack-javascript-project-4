@@ -26,7 +26,7 @@ const pageLoader = (inputUrl, output = '') => {
     return Promise.reject(err);
   }
   const outputDirPath = getAbsoluteFilePath(output)
-  const fileName = url.host.split('.').join('-');
+  const fileName = url.host.split('.').join('-') + url.pathname.split('/').join('-');
   const dirName = `${fileName}_files`;
   const htmlName = `${fileName}.html`;
   const absoluteFilePath = getAbsoluteFilePath(output,htmlName);
