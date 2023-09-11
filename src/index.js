@@ -8,7 +8,9 @@ import debug from 'debug';
 
 import Listr from 'listr';
 
-import { getAbsoluteFilePath, isNotOriginHostUrl, removeFirstSlash, normalizeFileName, isEndWithHyphen } from './utils.js';
+import {
+  getAbsoluteFilePath, isNotOriginHostUrl, removeFirstSlash, normalizeFileName, isEndWithHyphen,
+} from './utils.js';
 
 const pageLoader = (inputUrl, output = '') => {
   const log = debug('page-loader');
@@ -42,7 +44,7 @@ const pageLoader = (inputUrl, output = '') => {
           return;
         }
         const elUrl = new URL(oldSrc, url.origin);
-        const elementPath = normalizeFileName(elUrl, url)
+        const elementPath = normalizeFileName(elUrl, url);
         const absoluteElementPath = getAbsoluteFilePath(dirPath, elementPath);
         const newSrc = path.join(dirName, elementPath);
         $(element).attr(attributes[element.name], newSrc);

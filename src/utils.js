@@ -17,17 +17,17 @@ export const removeFirstSlash = (fileName) => {
   }
   return name;
 };
-export const normalizeFileName = (url, originUrl) =>{
+export const normalizeFileName = (url, originUrl) => {
   const originFileName = originUrl.host.split('.').join('-');
   const pathData = path.parse(url.pathname);
   const extname = pathData.ext.split('?')[0] === '' ? '.html' : pathData.ext.split('?')[0];
   const result = `${originFileName}${(url.pathname + url.search).replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
   return result;
-}
-export const isEndWithHyphen = (fileName) =>{
-  let name = fileName
-  if(name.endsWith('-')){
+};
+export const isEndWithHyphen = (fileName) => {
+  let name = fileName;
+  if (name.endsWith('-')) {
     name = name.slice(0, -1);
   }
   return name;
-}
+};
