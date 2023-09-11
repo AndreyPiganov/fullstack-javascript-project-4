@@ -51,9 +51,6 @@ const pageLoader = (inputUrl, output = '') => {
           $(element).attr(attributes[element.name], newSrc);
           filesLinks[elUrl.href] = absoluteElementPath
           log(`Source handled: ${oldSrc}`);
-          log(elUrl);
-          log(extname);
-          log(elementPath)
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
       tags.forEach((tag) => $(tag).each(downloadResources));
