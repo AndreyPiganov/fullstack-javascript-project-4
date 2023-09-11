@@ -10,10 +10,17 @@ export const isNotOriginHostUrl = (str, originStr) => {
     return false;
   }
 };
-export const normalizeFileName = (fileName) => {
+export const removeFirstSlash = (fileName) => {
   let name = fileName;
   if (name !== undefined && name.startsWith('/')) {
     name = name.replace('/', '');
   }
   return name;
 };
+export const normalizeFileName = (url, originUrl) =>{
+  const originFileName = originUrl.host.split('.').join('-');
+  const pathData = path.parse(url.pathname);
+  const extname = pathData.ext.split('?')[0] === '' ? '.html' : pathData.ext.split('?')[0];
+  const result = `${originFileName}${(url.pathname + url.search).replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
+  return result;
+}

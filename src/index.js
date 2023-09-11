@@ -8,7 +8,7 @@ import debug from 'debug';
 
 import Listr from 'listr';
 
-import { getAbsoluteFilePath, isNotOriginHostUrl, normalizeFileName } from './utils.js';
+import { getAbsoluteFilePath, isNotOriginHostUrl, removeFirstSlash, normalizeFileName } from './utils.js';
 
 const pageLoader = (inputUrl, output = '') => {
   const log = debug('page-loader');
@@ -27,7 +27,6 @@ const pageLoader = (inputUrl, output = '') => {
   }
   const outputDirPath = getAbsoluteFilePath(output);
   const fileName = url.host.split('.').join('-') + url.pathname.split('/').join('-');
-  const originFileName = url.host.split('.').join('-');
   const dirName = `${fileName}_files`;
   const htmlName = `${fileName}.html`;
   const absoluteFilePath = getAbsoluteFilePath(output, htmlName);
@@ -38,14 +37,12 @@ const pageLoader = (inputUrl, output = '') => {
     .then(($) => {
       // Функция устанавливает определенные ресурсы
       const downloadResources = (index, element) => {
-        const oldSrc = normalizeFileName($(element).attr(attributes[element.name]));
+        const oldSrc = removeFirstSlash($(element).attr(attributes[element.name]));
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
           return;
         }
-        const pathData = path.parse(oldSrc);
         const elUrl = new URL(oldSrc, url.origin);
-        const extname = pathData.ext.split('?')[0] === '' ? '.html' : pathData.ext.split('?')[0];
-        const elementPath = `${originFileName}${(elUrl.pathname + elUrl.search).replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
+        const elementPath = normalizeFileName(elUrl, url)
         const absoluteElementPath = getAbsoluteFilePath(dirPath, elementPath);
         const newSrc = path.join(dirName, elementPath);
         $(element).attr(attributes[element.name], newSrc);
