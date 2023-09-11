@@ -5,7 +5,7 @@ export const isNotOriginHostUrl = (str, originStr) => {
   try {
     const url = new URL(str);
     const originUrl = new URL(originStr);
-    return url.host !== originUrl.host || originUrl.pathname !== '//';
+    return url.host !== originUrl.host || url.pathname === '//';
   } catch (err) {
     return false;
   }
