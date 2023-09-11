@@ -45,7 +45,7 @@ const pageLoader = (inputUrl, output = '') => {
         const pathData = path.parse(oldSrc)
         const elUrl = new URL(oldSrc,url.origin);
         const extname = pathData.ext === '' ? '.html' : pathData.ext;
-        const elementPath = `${originFileName}-${elUrl.pathname.replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
+        const elementPath = `${originFileName}${elUrl.pathname.replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
         const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
         const newSrc = path.join(dirName, elementPath);
         $(element).attr(attributes[element.name], newSrc);
