@@ -70,7 +70,5 @@ const pageLoader = (inputUrl, output = '') => {
     })
     .then(() => htmlName);
 };
-// https://ru.hexlet.io/courses
-// https://www.brizk.com
-// https://tengrinews.kz
+
 export default pageLoader;
