@@ -44,8 +44,8 @@ const pageLoader = (inputUrl, output = '') => {
         }
         const pathData = path.parse(oldSrc)
         const elUrl = new URL(oldSrc,url.origin);
-        const extname = pathData.ext === '' ? '.html' : pathData.ext;
-        const elementPath = `${originFileName}${elUrl.pathname.replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
+        const extname = pathData.ext.split('?')[0] === '' ? '.html' : pathData.ext.split('?')[0];
+        const elementPath = `${originFileName}${(elUrl.pathname  + elUrl.search).replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
         const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
         const newSrc = path.join(dirName, elementPath);
         $(element).attr(attributes[element.name], newSrc);
@@ -55,7 +55,6 @@ const pageLoader = (inputUrl, output = '') => {
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
       tags.forEach((tag) => $(tag).each(downloadResources));
-      log($.html())
       return fs.writeFile(absoluteFilePath, $.html())
     })
     .then(() => {
