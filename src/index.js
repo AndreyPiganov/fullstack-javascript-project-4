@@ -28,8 +28,8 @@ const pageLoader = (inputUrl, output = '') => {
   const outputDirPath = getAbsoluteFilePath(output)
   const fileName = url.host.split('.').join('-') + url.pathname.split('/').join('-')
   const originFileName = url.host.split('.').join('-'); 
-  const dirName = `${fileName}_files`;
-  const htmlName = `${fileName}.html`;
+  const dirName = `${fileName.slice(0,-1)}_files`;
+  const htmlName = `${fileName.slice(0,-1)}.html`;
   const absoluteFilePath = getAbsoluteFilePath(output,htmlName);
   const absoluteDirPath = getAbsoluteFilePath(output, dirName);
   return fs.access(outputDirPath)
