@@ -8,6 +8,8 @@ import {
   getAbsoluteFilePath, isNotOriginHostUrl, isEndWithHyphen, normalizeFileName, removeFirstSlash,
 } from '../src/utils.js';
 import pageLoader from '../src/index.js';
+import { tmpdir } from 'os';
+import { after } from 'lodash';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,6 +25,8 @@ const expectedStylesName = 'ru-hexlet-io-courses-application.css';
 const expectedAbsoluteFilePath = '';
 
 nock.disableNetConnect();
+
+let tmpDir;
 let responseHtml;
 let expectedHtml;
 let expectedImage;
@@ -37,12 +41,26 @@ beforeAll(async () => {
   expectedScript = await fs.readFile(getFixturePath('runtime.js'));
 });
 
-test('pageLoader', async () => {
-  nock(/ru\.hexlet\.io/).persist().get(/courses/).reply(200, responseHtml);
-  nock(/ru\.hexlet\.io/).get('/assets/professions/nodejs.png').replyWithFile(200, getFixturePath('nodejs.png'));
-  nock(/ru\.hexlet\.io/).get('/assets/application.css').replyWithFile(200, getFixturePath('application.css'));
-  nock(/ru\.hexlet\.io/).get('/packs/js/runtime.js').replyWithFile(200, getFixturePath('runtime.js'));
-});
+beforeEach(async () =>{
+  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'))
+  process.chdir(tmpDir);
+  currentFilesDir = path.join(process.cwd(), filesDir)
+})
+
+afterEach(async () =>{
+  process.chdir(rootDir);
+  fs.rmdir(tmpDir, {recursive: true});
+})
+describe('PageLoader', async () =>{
+  test('functional pageLoader(page loading)', async () => {
+    nock(/ru\.hexlet\.io/).persist().get(/courses/).reply(200, responseHtml);
+    nock(/ru\.hexlet\.io/).get('/assets/professions/nodejs.png').replyWithFile(200, getFixturePath('nodejs.png'));
+    nock(/ru\.hexlet\.io/).get('/assets/application.css').replyWithFile(200, getFixturePath('application.css'));
+    nock(/ru\.hexlet\.io/).get('/packs/js/runtime.js').replyWithFile(200, getFixturePath('runtime.js'));
+
+    const htmlFilePath = pageLoader()
+  });
+})
 
 describe('Functions', () => {
   test('getFixturePath', () => {

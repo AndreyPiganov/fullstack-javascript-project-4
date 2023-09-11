@@ -12,7 +12,7 @@ import {
   getAbsoluteFilePath, isNotOriginHostUrl, removeFirstSlash, normalizeFileName, isEndWithHyphen,
 } from './utils.js';
 
-const pageLoader = (inputUrl, output = '') => {
+const pageLoader = async (inputUrl, output = '') => {
   const log = debug('page-loader');
   const tags = ['img', 'link', 'script'];
   const attributes = {
@@ -67,7 +67,7 @@ const pageLoader = (inputUrl, output = '') => {
       const tasks = new Listr(resources, { concurrent: true });
       return tasks.run();
     })
-    .then(() => htmlName);
+    .then(() => absoluteFilePath);
 };
 
 export default pageLoader;
