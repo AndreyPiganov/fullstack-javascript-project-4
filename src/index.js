@@ -58,19 +58,14 @@ const pageLoader = (inputUrl, output = '') => {
       tags.forEach((tag) => $(tag).each(downloadResources));
       return fs.writeFile(absoluteFilePath, $.html())
     })
-    .then(() => {
-      fs.mkdir(absoluteDirPath, (err) =>{
-        if(err){
-          console.error(err)
-        }
-      })
-    })
+    .then(() => (Object.keys(filesLinks).length > 0 ? fs.mkdir(absoluteDirPath) : Promise.resolve({})))
     .then(() =>{
     const resources = Object.keys(filesLinks).map((link) =>(      
       {
       title: link,
       task: () => axios.get(link, { responseType: 'arraybuffer' })
         .then((response) => {
+          console.log(response);
           fs.writeFile(filesLinks[response.config.url], response.data, 'binary')
       })
     }
