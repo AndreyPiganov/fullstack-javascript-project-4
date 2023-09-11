@@ -50,11 +50,12 @@ const pageLoader = (inputUrl, output = '') => {
         const newSrc = path.join(dirName, elementPath);
         $(element).attr(attributes[element.name], newSrc);
         filesLinks[elUrl.href] = absoluteElementPath
-        log(elUrl.href);
+        log(absoluteElementPath);
         log(`Source handled: ${oldSrc}`);
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
       tags.forEach((tag) => $(tag).each(downloadResources));
+      log($.html())
       return fs.writeFile(absoluteFilePath, $.html())
     })
     .then(() => {
