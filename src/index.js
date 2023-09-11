@@ -26,7 +26,7 @@ const pageLoader = (inputUrl, output = '') => {
     return Promise.reject(err);
   }
   const outputDirPath = getAbsoluteFilePath(output)
-  const fileName = url.host.split('.').join('-') + url.pathname.split('/').join('-')
+  const fileName = url.host.split('.').join('-') + url.pathname.split('/').join('-').slice(0, -1)
   const originFileName = url.host.split('.').join('-'); 
   const dirName = `${fileName}_files`;
   const htmlName = `${fileName}.html`;
@@ -50,6 +50,7 @@ const pageLoader = (inputUrl, output = '') => {
         const newSrc = path.join(dirName, elementPath);
         $(element).attr(attributes[element.name], newSrc);
         filesLinks[elUrl.href] = absoluteElementPath
+        console.log((elUrl.pathname  + elUrl.search))
         log(absoluteElementPath);
         log(`Source handled: ${oldSrc}`);
       };
