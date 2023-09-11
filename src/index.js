@@ -20,58 +20,55 @@ const pageLoader = (inputUrl, output = '') => {
   };
   const filesLinks = {};
   let url;
-  try{
-    url = new URL(inputUrl)
-  }catch(err){
+  try {
+    url = new URL(inputUrl);
+  } catch (err) {
     return Promise.reject(err);
   }
-  const outputDirPath = getAbsoluteFilePath(output)
-  const fileName = url.host.split('.').join('-') + url.pathname.split('/').join('-')
-  const originFileName = url.host.split('.').join('-'); 
+  const outputDirPath = getAbsoluteFilePath(output);
+  const fileName = url.host.split('.').join('-') + url.pathname.split('/').join('-');
+  const originFileName = url.host.split('.').join('-');
   const dirName = `${fileName}_files`;
   const htmlName = `${fileName}.html`;
-  const absoluteFilePath = getAbsoluteFilePath(output,htmlName);
-  const absoluteDirPath = getAbsoluteFilePath(output, dirName);
+  const absoluteFilePath = getAbsoluteFilePath(output, htmlName);
+  const dirPath = getAbsoluteFilePath(output, dirName);
   return fs.access(outputDirPath)
-  .then(() => axios.get(url))
-  .then((response) => cheerio.load(response.data))
-  .then(($) => {
+    .then(() => axios.get(url))
+    .then((response) => cheerio.load(response.data))
+    .then(($) => {
       // Функция устанавливает определенные ресурсы
       const downloadResources = (index, element) => {
         const oldSrc = normalizeFileName($(element).attr(attributes[element.name]));
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
-          return 
+          return;
         }
-        const pathData = path.parse(oldSrc)
-        const elUrl = new URL(oldSrc,url.origin);
+        const pathData = path.parse(oldSrc);
+        const elUrl = new URL(oldSrc, url.origin);
         const extname = pathData.ext.split('?')[0] === '' ? '.html' : pathData.ext.split('?')[0];
-        const elementPath = `${originFileName}${(elUrl.pathname  + elUrl.search).replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
-        const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
+        const elementPath = `${originFileName}${(elUrl.pathname + elUrl.search).replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
+        const absoluteElementPath = getAbsoluteFilePath(dirPath, elementPath);
         const newSrc = path.join(dirName, elementPath);
         $(element).attr(attributes[element.name], newSrc);
-        filesLinks[elUrl.href] = absoluteElementPath
-        console.log((elUrl.pathname  + elUrl.search))
-        log(absoluteElementPath);
+        filesLinks[elUrl.href] = absoluteElementPath;
         log(`Source handled: ${oldSrc}`);
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
       tags.forEach((tag) => $(tag).each(downloadResources));
-      return fs.writeFile(absoluteFilePath, $.html())
+      return fs.writeFile(absoluteFilePath, $.html());
     })
-    .then(() => (Object.keys(filesLinks).length > 0 ? fs.mkdir(absoluteDirPath) : Promise.resolve({})))
-    .then(() =>{
-    const resources = Object.keys(filesLinks).map((link) =>(      
-      {
-      title: link,
-      task: () => axios.get(link, { responseType: 'arraybuffer' })
-        .then((response) => fs.writeFile(filesLinks[response.config.url], response.data, 'binary'))
-    }
-    ))
-    log(resources)
-    const tasks = new Listr(resources, {concurrent: true});
-    return tasks.run();
-  })
-    .then(() => htmlName)
+    .then(() => (Object.keys(filesLinks).length > 0 ? fs.mkdir(dirPath) : Promise.resolve({})))
+    .then(() => {
+      const resources = Object.keys(filesLinks).map((link) => (
+        {
+          title: link,
+          task: () => axios.get(link, { responseType: 'arraybuffer' })
+            .then((response) => fs.writeFile(filesLinks[response.config.url], response.data, 'binary')),
+        }
+      ));
+      const tasks = new Listr(resources, { concurrent: true });
+      return tasks.run();
+    })
+    .then(() => htmlName);
 };
 // https://ru.hexlet.io/courses
 // https://www.brizk.com
