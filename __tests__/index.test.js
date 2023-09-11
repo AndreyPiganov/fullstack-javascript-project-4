@@ -2,14 +2,13 @@ import { fileURLToPath } from 'url';
 
 import path from 'path';
 
+import os from 'os';
 import fs from 'fs/promises';
 import nock from 'nock';
 import {
   getAbsoluteFilePath, isNotOriginHostUrl, isEndWithHyphen, normalizeFileName, removeFirstSlash,
 } from '../src/utils.js';
 import pageLoader from '../src/index.js';
-import { tmpdir } from 'os';
-import { after } from 'lodash';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +25,7 @@ const expectedAbsoluteFilePath = '';
 
 nock.disableNetConnect();
 
+let currentFilesDir;
 let tmpDir;
 let responseHtml;
 let expectedHtml;
@@ -51,14 +51,19 @@ afterEach(async () =>{
   process.chdir(rootDir);
   fs.rmdir(tmpDir, {recursive: true});
 })
-describe('PageLoader', async () =>{
+describe('PageLoader', () =>{
   test('functional pageLoader(page loading)', async () => {
     nock(/ru\.hexlet\.io/).persist().get(/courses/).reply(200, responseHtml);
     nock(/ru\.hexlet\.io/).get('/assets/professions/nodejs.png').replyWithFile(200, getFixturePath('nodejs.png'));
     nock(/ru\.hexlet\.io/).get('/assets/application.css').replyWithFile(200, getFixturePath('application.css'));
     nock(/ru\.hexlet\.io/).get('/packs/js/runtime.js').replyWithFile(200, getFixturePath('runtime.js'));
 
-    const htmlFilePath = pageLoader()
+    const actualHtmlPath = await pageLoader(url, './')
+
+    const actualHtml = await fs.readFile(actualHtmlPath, 'utf8');
+    fs.writeFile(process.cwd(), actualHtml)
+    console.log(actualHtml);
+    expect(actualHtml).toEqual(expectedHtml);
   });
 })
 
