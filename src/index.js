@@ -42,7 +42,6 @@ const pageLoader = (inputUrl, output = '') => {
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
           return 
         }
-        log(path.parse(oldSrc))
         const pathData = path.parse(oldSrc)
           const elUrl = new URL(oldSrc,url.origin);
           const extname = pathData.ext === '' ? '.html' : pathData.ext;
@@ -52,6 +51,7 @@ const pageLoader = (inputUrl, output = '') => {
           $(element).attr(attributes[element.name], newSrc);
           filesLinks[elUrl.href] = absoluteElementPath
           log(`Source handled: ${oldSrc}`);
+          log(elUrl)
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
       tags.forEach((tag) => $(tag).each(downloadResources));
