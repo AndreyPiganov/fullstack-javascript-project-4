@@ -40,10 +40,9 @@ const pageLoader = (inputUrl, output = '') => {
       const downloadResources = (index, element) => {
         const oldSrc = normalizeFileName($(element).attr(attributes[element.name]));
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
-          log(`${oldSrc} Hello`)
-          log(isNotOriginHostUrl(oldSrc, url))
           return 
         }
+        log(path.parse(oldSrc))
           const elUrl = new URL(oldSrc,url.origin);
           const extname = oldSrc.match(/(\.\w+)(?=\?|$)/i) || '';
           const elementPath = `${originFileName}-${oldSrc.replace(extname[0] || '.html', '').split(/[?_/]/).join('-')}${extname[0] || '.html'}`;
