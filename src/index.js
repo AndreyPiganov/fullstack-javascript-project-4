@@ -39,6 +39,7 @@ const pageLoader = (inputUrl, output = '') => {
       // Функция устанавливает определенные ресурсы
       const downloadResources = (index, element) => {
         const oldSrc = normalizeFileName($(element).attr(attributes[element.name]), url);
+        log(`${oldSrc} Hello`)
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
           return 
         }
