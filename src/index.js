@@ -43,15 +43,15 @@ const pageLoader = (inputUrl, output = '') => {
           return 
         }
         const pathData = path.parse(oldSrc)
-          const elUrl = new URL(oldSrc,url.origin);
-          const extname = pathData.ext === '' ? '.html' : pathData.ext;
-          const elementPath = `${originFileName}-${oldSrc.replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
-          const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
-          const newSrc = path.join(dirName, elementPath);
-          $(element).attr(attributes[element.name], newSrc);
-          filesLinks[elUrl.href] = absoluteElementPath
-          log(`Source handled: ${oldSrc}`);
-          log(elUrl)
+        const elUrl = new URL(oldSrc,url.origin);
+        const extname = pathData.ext === '' ? '.html' : pathData.ext;
+        const elementPath = `${originFileName}-${elUrl.pathname.replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
+        const absoluteElementPath = getAbsoluteFilePath(absoluteDirPath, elementPath);
+        const newSrc = path.join(dirName, elementPath);
+        $(element).attr(attributes[element.name], newSrc);
+        filesLinks[elUrl.href] = absoluteElementPath
+        log(`Source handled: ${oldSrc}`);
+        log(elUrl)
       };
       // Проходимся по всем тегам чтобы скачать ресурсы
       tags.forEach((tag) => $(tag).each(downloadResources));
