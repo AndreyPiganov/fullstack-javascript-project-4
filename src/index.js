@@ -39,10 +39,10 @@ const pageLoader = (inputUrl, output = '') => {
       // Функция устанавливает определенные ресурсы
       const downloadResources = (index, element) => {
         const oldSrc = normalizeFileName($(element).attr(attributes[element.name]), url);
-        log(`${oldSrc} Hello`)
         if (isNotOriginHostUrl(oldSrc, url) || oldSrc === undefined) {
           return 
         }
+        log(`${oldSrc} Hello`)
           const elUrl = new URL(oldSrc,url.origin);
           const extname = oldSrc.match(/(\.\w+)(?=\?|$)/i) || '';
           const elementPath = `${originFileName}-${oldSrc.replace(extname[0] || '.html', '').split(/[?_/]/).join('-')}${extname[0] || '.html'}`;
