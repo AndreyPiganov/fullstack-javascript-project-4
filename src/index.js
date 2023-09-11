@@ -8,7 +8,7 @@ import debug from 'debug';
 
 import Listr from 'listr';
 
-import { getAbsoluteFilePath, isNotOriginHostUrl, removeFirstSlash, normalizeFileName } from './utils.js';
+import { getAbsoluteFilePath, isNotOriginHostUrl, removeFirstSlash, normalizeFileName, isEndWithHyphen } from './utils.js';
 
 const pageLoader = (inputUrl, output = '') => {
   const log = debug('page-loader');
@@ -26,7 +26,7 @@ const pageLoader = (inputUrl, output = '') => {
     return Promise.reject(err);
   }
   const outputDirPath = getAbsoluteFilePath(output);
-  const fileName = url.host.split('.').join('-') + url.pathname.split('/').join('-');
+  const fileName = isEndWithHyphen(url.host.split('.').join('-') + url.pathname.split('/').join('-'));
   const dirName = `${fileName}_files`;
   const htmlName = `${fileName}.html`;
   const absoluteFilePath = getAbsoluteFilePath(output, htmlName);

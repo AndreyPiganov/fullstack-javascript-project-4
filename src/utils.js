@@ -24,3 +24,10 @@ export const normalizeFileName = (url, originUrl) =>{
   const result = `${originFileName}${(url.pathname + url.search).replace(extname, '').split(/[?_/]/).join('-')}${extname}`;
   return result;
 }
+export const isEndWithHyphen = (fileName) =>{
+  let name = fileName
+  if(name.endsWith('-')){
+    name = name.slice(0, -1);
+  }
+  return name;
+}
