@@ -21,12 +21,7 @@ const pageLoader = async (inputUrl, output = '') => {
     script: 'src',
   };
   const filesLinks = {};
-  let url;
-  try {
-    url = new URL(inputUrl);
-  } catch (err) {
-    return Promise.reject(err);
-  }
+  const url = new URL(inputUrl);
   const outputDirPath = getAbsoluteFilePath(output);
   const fileName = isEndWithHyphen(url.host.split('.').join('-') + url.pathname.split('/').join('-'));
   const dirName = `${fileName}_files`;
