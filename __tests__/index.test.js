@@ -17,12 +17,9 @@ const rootDir = process.cwd();
 const url = 'https://ru.hexlet.io/courses/';
 const filesDir = 'ru-hexlet-io-courses_files';
 const expectOriginUrl = 'ru-hexlet-io-courses';
-const fakeUrl = 'fake.hexlet.io/courses/'
-const expectedScriptName = 'ru-hexlet-io-courses-runtime.js';
-const expectedImageName = 'ru-hexlet-io-courses-nodejs.png';
-const expectedHtmlName = 'ru-hexlet-io-courses.html';
-const expectedStylesName = 'ru-hexlet-io-courses-application.css';
-const expectedAbsoluteFilePath = '';
+const expectedScriptName = 'ru-hexlet-io-packs-js-runtime.js';
+const expectedImageName = 'ru-hexlet-io-assets-professions-nodejs.png';
+const expectedStylesName = 'ru-hexlet-io-assets-application.css';
 const firstResult = getAbsoluteFilePath('__fixtures__');
 const secondResult = getAbsoluteFilePath('__fixtures__', 'after.html');
 
@@ -44,31 +41,42 @@ beforeAll(async () => {
   expectedScript = await fs.readFile(getFixturePath('runtime.js'));
 });
 
-beforeEach(async () =>{
-  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'))
+beforeEach(async () => {
+  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
   process.chdir(tmpDir);
-  currentFilesDir = path.join(process.cwd(), filesDir)
-})
+  currentFilesDir = path.join(process.cwd(), filesDir);
+});
 
-afterEach(async () =>{
+afterEach(async () => {
   process.chdir(rootDir);
-  fs.rmdir(tmpDir, {recursive: true});
-})
-describe('PageLoader', () =>{
-  test('functional pageLoader(page loading)', async () => {
-    nock(/ru\.hexlet\.io/).persist().get(/courses/).reply(200, responseHtml);
-    nock(/ru\.hexlet\.io/).get('/assets/professions/nodejs.png').replyWithFile(200, getFixturePath('nodejs.png'));
-    nock(/ru\.hexlet\.io/).get('/assets/application.css').replyWithFile(200, getFixturePath('application.css'));
-    nock(/ru\.hexlet\.io/).get('/packs/js/runtime.js').replyWithFile(200, getFixturePath('runtime.js'));
+  fs.rmdir(tmpDir, { recursive: true });
+});
+test('pageLoader - positiveCases', async () => {
+  nock(/ru\.hexlet\.io/).persist().get(/courses/).reply(200, responseHtml);
+  nock(/ru\.hexlet\.io/).get('/assets/professions/nodejs.png').replyWithFile(200, getFixturePath('nodejs.png'));
+  nock(/ru\.hexlet\.io/).get('/assets/application.css').replyWithFile(200, getFixturePath('application.css'));
+  nock(/ru\.hexlet\.io/).get('/packs/js/runtime.js').replyWithFile(200, getFixturePath('runtime.js'));
 
-    const actualHtmlPath = await pageLoader(url, './')
-    //const fakeHtmlPath = await pageLoader(fakeUrl, './');
-    //console.log(fakeHtmlPath)
+  const actualHtmlPath = await pageLoader(url, './');
 
-    const actualHtml = await fs.readFile(actualHtmlPath, 'utf8');
-    expect(actualHtml).toEqual(expectedHtml);
-  });
-})
+  const actualHtml = await fs.readFile(actualHtmlPath, 'utf8');
+  expect(actualHtml).toEqual(expectedHtml);
+
+  const actualImagePath = path.join(currentFilesDir, expectedImageName);
+  const actualImage = await fs.readFile(actualImagePath);
+
+  expect(actualImage).toEqual(expectedImage);
+
+  const actualStylePath = path.join(currentFilesDir, expectedStylesName);
+  const actualStyle = await fs.readFile(actualStylePath);
+
+  expect(actualStyle).toEqual(expectedStyle);
+
+  const actualScriptPath = path.join(currentFilesDir, expectedScriptName);
+  const actualScript = await fs.readFile(actualScriptPath);
+
+  expect(actualScript).toEqual(expectedScript);
+});
 
 describe('Functions', () => {
   test('isEndWithHyphen', () => {
